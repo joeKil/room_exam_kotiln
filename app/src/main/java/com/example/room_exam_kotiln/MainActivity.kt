@@ -2,6 +2,7 @@ package com.example.room_exam_kotiln
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.room.Room.databaseBuilder
 import com.example.room_exam_kotiln.databinding.ActivityMainBinding
 
@@ -19,11 +20,14 @@ class MainActivity : AppCompatActivity() {
             .allowMainThreadQueries()
             .build()
 
-        binding.resultText.text = db.todoDao().getAll().toString()
+        // LiveData
+        db.todoDao().getAll().observe(this, Observer { todos ->
+            binding.resultText.text = todos.toString()
+        })
+
 
         binding.addButton.setOnClickListener {
             db.todoDao().insert(Todo(binding.todoEdit.text.toString()))
-            binding.resultText.text = db.todoDao().getAll().toString()
         }
     }
 }
